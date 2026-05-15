@@ -291,6 +291,34 @@ header{padding:0.75rem 1rem;flex-wrap:wrap;gap:0.4rem;position:sticky;top:0;z-in
 .add-label{display:none}
 .add-icon{display:block;font-size:1.6rem;line-height:1}
 }
+
+/* ── CODING TAB ── */
+.coding-wrap{padding:1.5rem 2rem 4rem}
+@media(max-width:580px){.coding-wrap{padding:1rem 1rem 3rem}}
+.coding-intro{margin-bottom:1.5rem}
+.coding-intro h2{font-family:'Libre Baskerville',serif;font-size:1.1rem;color:#1a0e08;margin-bottom:0.3rem}
+.coding-intro p{font-size:0.68rem;letter-spacing:0.1em;text-transform:uppercase;color:#7a5c4a;font-weight:500}
+.coding-table{width:100%;border-collapse:collapse}
+.coding-table th{font-size:0.54rem;letter-spacing:0.22em;text-transform:uppercase;color:#7a5c4a;font-weight:600;padding:0.5rem 0.75rem;border-bottom:2px solid #D4C4A0;text-align:left;background:#f5ede0;white-space:nowrap}
+.coding-table th:first-child{border-radius:10px 0 0 0}
+.coding-table th:last-child{border-radius:0 10px 0 0}
+.coding-table td{padding:0.65rem 0.75rem;border-bottom:1px solid #D4C4A0;vertical-align:middle;font-size:0.78rem;color:#1a0e08;font-family:'Libre Baskerville',serif}
+.coding-table tr:last-child td{border-bottom:none}
+.coding-table tr:hover td{background:#f5ede0}
+.coding-table-wrap{background:#fffcf5;border:1px solid #D4C4A0;border-radius:10px;overflow:hidden}
+.coding-stone-name{font-weight:700;font-size:0.88rem}
+.grade-badge{display:inline-block;padding:0.18rem 0.55rem;border-radius:20px;font-size:0.58rem;letter-spacing:0.1em;font-family:'Outfit',sans-serif;font-weight:600;text-transform:uppercase}
+.grade-badge.clarity{background:#e8f0ed;color:#1f7044;border:1px solid #b8d8c8}
+.grade-badge.cut{background:#f0e8f0;color:#8B3A62;border:1px solid #d4a8c8}
+.grade-badge.treatment{background:#fdf3e8;color:#8B6014;border:1px solid #d4b880}
+.grade-badge.treatment.none{background:#e8f0ed;color:#1f7044;border:1px solid #b8d8c8}
+.grade-badge.origin{background:#e8ecf5;color:#2a4080;border:1px solid #a8b8d8}
+.coding-empty{text-align:center;padding:4rem 2rem;color:#7a5c4a}
+.coding-empty p{font-size:0.7rem;letter-spacing:0.14em;text-transform:uppercase;margin-top:0.5rem}
+.coding-action-btn{padding:0.32rem 0.75rem;background:transparent;border:1.5px solid #C4A882;border-radius:20px;color:#7a5c4a;font-family:'Libre Baskerville',serif;font-size:0.58rem;cursor:pointer;transition:all 0.18s;white-space:nowrap}
+.coding-action-btn:hover{border-color:#8B3A62;color:#8B3A62}
+.form-section-divider{display:flex;align-items:center;gap:0.75rem;margin:1rem 0 0.85rem;font-size:0.56rem;letter-spacing:0.22em;text-transform:uppercase;color:#7a5c4a;font-weight:600}
+.form-section-divider::before,.form-section-divider::after{content:'';flex:1;height:1px;background:#D4C4A0}
 </style>
 
 </head>
@@ -316,6 +344,7 @@ header{padding:0.75rem 1rem;flex-wrap:wrap;gap:0.4rem;position:sticky;top:0;z-in
 <div class="tab-nav">
   <button class="tab-btn active" onclick="switchTab('collection',this)">Collection</button>
   <button class="tab-btn" onclick="switchTab('case',this)">Case Map</button>
+  <button class="tab-btn" onclick="switchTab('coding',this)">Coding</button>
 </div>
 
 <!-- COLLECTION -->
@@ -368,6 +397,19 @@ header{padding:0.75rem 1rem;flex-wrap:wrap;gap:0.4rem;position:sticky;top:0;z-in
   </div>
 </div>
 
+<!-- CODING -->
+<div class="panel" id="panel-coding">
+  <div class="coding-wrap">
+    <div class="coding-intro">
+      <h2>Grading & Coding</h2>
+      <p>Cut · Color · Clarity · Treatment · Origin · Certificate for all stones</p>
+    </div>
+    <div class="coding-table-wrap">
+      <div id="codingContainer"></div>
+    </div>
+  </div>
+</div>
+
 <!-- Add/Edit Modal -->
 
 <div class="modal-backdrop" id="addModal">
@@ -395,9 +437,38 @@ header{padding:0.75rem 1rem;flex-wrap:wrap;gap:0.4rem;position:sticky;top:0;z-in
         <div class="field no-mb"><label>No. of Pieces</label><input type="number" id="pieces" placeholder="1" step="1" min="1" value="1"></div>
         <div class="field no-mb"><label>Case Slot</label><select id="slotSelect"></select></div>
       </div>
-
-```
-  <div class="field"><label>Notes (optional)</label><textarea id="stoneNotes" placeholder="Color, clarity, cut, origin…"></textarea></div>
+      <div class="form-section-divider">Grading &amp; Coding</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.75rem;margin-bottom:0.85rem">
+        <div class="field no-mb"><label>Cut / Shape</label><input type="text" id="gemCut" placeholder="Round, Oval, Cushion…"></div>
+        <div class="field no-mb"><label>Color Grade</label><input type="text" id="colorGrade" placeholder="D–Z or Vivid Blue…"></div>
+        <div class="field no-mb"><label>Clarity Grade</label><select id="clarityGrade">
+          <option value="">— None —</option>
+          <option>FL</option><option>IF</option>
+          <option>VVS1</option><option>VVS2</option>
+          <option>VS1</option><option>VS2</option>
+          <option>SI1</option><option>SI2</option>
+          <option>I1</option><option>I2</option><option>I3</option>
+          <option>Eye Clean</option><option>Included</option>
+        </select></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.75rem;margin-bottom:0.85rem">
+        <div class="field no-mb"><label>Treatment</label><select id="gemTreatment">
+          <option value="">— Unknown —</option>
+          <option>None / Untreated</option>
+          <option>Heat</option>
+          <option>Beryllium</option>
+          <option>Fracture Fill</option>
+          <option>Clarity Enhanced</option>
+          <option>Irradiated</option>
+          <option>Coated</option>
+          <option>Oiled / Resin</option>
+          <option>Bleached</option>
+          <option>Combination</option>
+        </select></div>
+        <div class="field no-mb"><label>Origin</label><input type="text" id="gemOrigin" placeholder="Burma, Ceylon…"></div>
+        <div class="field no-mb"><label>Certificate / Lab</label><input type="text" id="gemCert" placeholder="GIA 1234567890"></div>
+      </div>
+  <div class="field"><label>Notes (optional)</label><textarea id="stoneNotes" placeholder="Additional notes…"></textarea></div>
   <label style="display:block;margin-bottom:0.5rem;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:#7a5c4a;font-weight:600">Source / Listing</label>
   <div class="source-section">
     <div class="source-tabs">
@@ -463,6 +534,7 @@ function switchTab(id,btn){
   document.getElementById('panel-'+id).classList.add('active');
   btn.classList.add('active');
   if(id==='case')renderCase();
+  if(id==='coding')renderCoding();
 }
 
 function render(){
@@ -618,6 +690,12 @@ function fillForm(g,slot){
   document.getElementById('carat').value=g.carat||'';
   document.getElementById('pieces').value=g.pieces||1;
   document.getElementById('stoneNotes').value=g.notes||'';
+  document.getElementById('gemCut').value=g.cut||'';
+  document.getElementById('colorGrade').value=g.colorGrade||'';
+  document.getElementById('clarityGrade').value=g.clarityGrade||'';
+  document.getElementById('gemTreatment').value=g.treatment||'';
+  document.getElementById('gemOrigin').value=g.origin||'';
+  document.getElementById('gemCert').value=g.cert||'';
   document.getElementById('sourceUrl').value=g.sourceUrl||'';
   document.getElementById('sourceImgUrl').value=g.sourceImgUrl||'';
   document.getElementById('srcImgFeedback').innerHTML=g.sourceImgUrl?`<img class="src-preview" src="${g.sourceImgUrl}" alt="preview">`:'';
@@ -640,6 +718,12 @@ function openAddModal(id=null){
     document.getElementById('dimW').value='';
     document.getElementById('dimD').value='';
     document.getElementById('stoneNotes').value='';
+    document.getElementById('gemCut').value='';
+    document.getElementById('colorGrade').value='';
+    document.getElementById('clarityGrade').value='';
+    document.getElementById('gemTreatment').value='';
+    document.getElementById('gemOrigin').value='';
+    document.getElementById('gemCert').value='';
     document.getElementById('sourceUrl').value='';
     document.getElementById('sourceImgUrl').value='';
     document.getElementById('srcImgFeedback').innerHTML='';
@@ -683,6 +767,12 @@ function saveGem(){
     carat:document.getElementById('carat').value||'',
     pieces:parseInt(document.getElementById('pieces').value)||1,
     notes:document.getElementById('stoneNotes').value.trim(),
+    cut:document.getElementById('gemCut').value.trim(),
+    colorGrade:document.getElementById('colorGrade').value.trim(),
+    clarityGrade:document.getElementById('clarityGrade').value,
+    treatment:document.getElementById('gemTreatment').value,
+    origin:document.getElementById('gemOrigin').value.trim(),
+    cert:document.getElementById('gemCert').value.trim(),
     slot:document.getElementById('slotSelect').value||'',
     sourceUrl:document.getElementById('sourceUrl').value.trim(),
     sourceImgUrl:document.getElementById('sourceImgUrl').value.trim(),
@@ -725,6 +815,15 @@ function openDetail(id){
         <div><div class="ds-label">Added</div><div class="ds-value" style="font-size:0.88rem">${date}</div></div>
         <div><div class="ds-label">ID</div><div class="ds-value" style="font-size:0.85rem;color:#7a5c4a">#${g.id.slice(-4)}</div></div>
       </div>
+      ${(g.cut||g.colorGrade||g.clarityGrade||g.treatment||g.origin||g.cert)?`
+      <div class="detail-stats" style="margin-top:0">
+        ${g.cut?`<div><div class="ds-label">Cut</div><div class="ds-value" style="font-size:0.9rem">${g.cut}</div></div>`:''}
+        ${g.colorGrade?`<div><div class="ds-label">Color</div><div class="ds-value" style="font-size:0.9rem">${g.colorGrade}</div></div>`:''}
+        ${g.clarityGrade?`<div><div class="ds-label">Clarity</div><div class="ds-value" style="font-size:0.9rem">${g.clarityGrade}</div></div>`:''}
+        ${g.treatment?`<div><div class="ds-label">Treatment</div><div class="ds-value" style="font-size:0.82rem">${g.treatment}</div></div>`:''}
+        ${g.origin?`<div><div class="ds-label">Origin</div><div class="ds-value" style="font-size:0.9rem">${g.origin}</div></div>`:''}
+        ${g.cert?`<div><div class="ds-label">Certificate</div><div class="ds-value" style="font-size:0.8rem">${g.cert}</div></div>`:''}
+      </div>`:''}
       ${g.notes?`<div class="detail-notes">${g.notes}</div>`:''}
       ${sourceHtml}
     </div>`;
@@ -802,6 +901,35 @@ function handleImport(input){
 document.getElementById('addModal').addEventListener('click',function(e){if(e.target===this)closeAddModal();});
 document.getElementById('detailModal').addEventListener('click',function(e){if(e.target===this)closeDetailModal();});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeAddModal();closeDetailModal();}});
+
+function renderCoding(){
+  const container=document.getElementById('codingContainer');
+  if(!gems.length){
+    container.innerHTML='<div class="coding-empty"><div style="font-size:2.5rem">💎</div><p>No stones in your vault yet</p></div>';
+    return;
+  }
+  const treatmentClass=t=>(!t||t==='None / Untreated')?'none':'';
+  const badge=(val,cls)=>val?`<span class="grade-badge ${cls}">${val}</span>`:'-';
+  const rows=gems.map(g=>`
+    <tr>
+      <td class="coding-stone-name">${g.name||'Unnamed'}</td>
+      <td>${g.cut||'—'}</td>
+      <td>${badge(g.colorGrade,'color')}</td>
+      <td>${badge(g.clarityGrade,'clarity')}</td>
+      <td>${g.treatment?`<span class="grade-badge treatment ${treatmentClass(g.treatment)}">${g.treatment}</span>`:'—'}</td>
+      <td>${g.origin||'—'}</td>
+      <td style="font-size:0.7rem;color:#7a5c4a">${g.cert||'—'}</td>
+      <td><button class="coding-action-btn" onclick="openAddModal('${g.id}')">Edit</button></td>
+    </tr>`).join('');
+  container.innerHTML=`
+    <table class="coding-table">
+      <thead><tr>
+        <th>Stone</th><th>Cut / Shape</th><th>Color</th><th>Clarity</th><th>Treatment</th><th>Origin</th><th>Certificate</th><th></th>
+      </tr></thead>
+      <tbody>${rows}</tbody>
+    </table>`;
+}
+
 
 render();
 </script>
